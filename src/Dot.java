@@ -6,15 +6,6 @@ public class Dot {
     private boolean ifBottom;
     private int xCoordinate;
     private int yCoordinate;
-    private String move;
-
-    public String getMove() {
-        return move;
-    }
-
-    public void setMove(String move) {
-        this.move = move;
-    }
 
     public Dot(String[][] array, int x , int y) {
         ifLeft = false;
@@ -31,8 +22,10 @@ public class Dot {
             }
         }
         //checks right
-        if (array[y][x + 1].equals(".")) {
-            ifRight = true;
+        if (x + 1 < array[0].length) {
+            if (array[y][x + 1].equals(".")) {
+                ifRight = true;
+            }
         }
         //checks top
         if (y - 1 >= 0) {
@@ -41,8 +34,10 @@ public class Dot {
             }
         }
         //checks bottom
-        if (array[y + 1][x].equals(".")) {
-            ifBottom = true;
+        if (y + 1 < array.length) {
+            if (array[y + 1][x].equals(".")) {
+                ifBottom = true;
+            }
         }
 
     }

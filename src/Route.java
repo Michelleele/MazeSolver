@@ -14,93 +14,99 @@ public class Route {
     private void appendDotArray() {
         Dot previous = new Dot(map, 0, 0);
         dotArray.add(previous);
-        int[] nextCoordinates = evaluateFirst(previous);
+        Dot current = evaluateFirst(previous);
 
-        Dot current = new Dot(map, nextCoordinates[0], nextCoordinates[1]);
+        int x = 0;
 
-        while ((current.getXCoordinate() < map[0].length - 1) || (current.getYCoordinate() < map.length - 1)) {
-            nextCoordinates = evaluatePoint(current, previous);
-
-            System.out.print( "(" + current.getYCoordinate() + "," + current.getXCoordinate() + ")" + " ");
-
-
-            current.setYCoordinate(nextCoordinates[0]);
-            current.setXCoordinate(nextCoordinates[1]);
-            previous.setYCoordinate(current.getYCoordinate());
-            previous.setXCoordinate(current.getXCoordinate());
-
-
+        while ((x != 2) && (current.getXCoordinate() < map[0].length - 1) || (current.getYCoordinate() < map.length - 1)) {
+            dotArray.add(current);
+            previous = new Dot(map, current.getXCoordinate(), current.getYCoordinate());
+            current = evaluatePoint(previous);
+            x ++;
         }
-
-
+        dotArray.add(current);
     }
 
-    //[x, y]
-
-    private int[] evaluateFirst(Dot first) {
+    private Dot evaluateFirst(Dot first) {
         if (first.isIfBottom()) {
-            first.setMove("b");
-            return new int[] {0, 1};
+            return new Dot(map, 0, 1);
         }
         if (first.isIfRight()) {
-            first.setMove("r");
-            return new int[] {1, 0};
+            return new Dot(map, 1, 0);
         }
-        return new int[] {-1, -1};
+        return null;
+    }
+
+    private ArrayList<Dot> findAllPossibleOutcome(Dot previous) {
+        ArrayList<Dot> possiblePoints = new ArrayList<Dot>();
+        if (previous.isIfBottom()) {
+            possiblePoints.add(moveBottom(previous));
+        }
+        if (previous.isIfLeft()) {
+            possiblePoints.add(moveLeft(previous));
+        }
+        if (previous.isIfTop()) {
+            possiblePoints.add(moveTop(previous));
+        }
+        if (previous.isIfRight()) {
+            possiblePoints.add(moveRight(previous));
+        }
+        return possiblePoints;
+    }
+
+    private Dot findSolution(ArrayList<Dot> allPossibleSolutions) {
+        for (Dot dot : allPossibleSolutions) {
+            if (!isFound(dot)) {
+                return dot;
+            }
+        }
+        return null;
+    }
+
+    private Dot moveTop(Dot previous) {
+        int y = previous.getYCoordinate() - 1;
+        return new Dot(map, previous.getXCoordinate(), y);
+    }
+
+    private Dot moveBottom(Dot previous) {
+        int y = previous.getYCoordinate() + 1;
+        return new Dot(map, previous.getXCoordinate(), y);
+    }
+
+    private Dot moveLeft(Dot previous) {
+        int x = previous.getXCoordinate() - 1;
+        return new Dot(map, x, previous.getYCoordinate());
+    }
+
+    private Dot moveRight(Dot previous) {
+        int x = previous.getXCoordinate() + 1;
+        return new Dot(map, x, previous.getYCoordinate());
     }
 
     private boolean isFound(Dot target) {
         for (Dot dot : dotArray) {
-            if ((dot.getYCoordinate() == target.getXCoordinate()) && (dot.getXCoordinate() == target.getYCoordinate())) {
+            if ((dot.getYCoordinate() == target.getYCoordinate()) && (dot.getXCoordinate() == target.getXCoordinate())) {
                 return true;
             }
         }
         return false;
     }
 
-    //returns an integer array with the points of the next point
-    // [x, y]
-    private int[] evaluatePoint(Dot thisDot, Dot previousDot) {
-        int x = -1;
-        int y = -1;
-
-//        System.out.println("Top = " + thisDot.isIfTop());
-//        System.out.println("previous move = " + previousDot.getMove());
-//        System.out.println("Bottom = " + thisDot.isIfBottom());
-
-        if (thisDot.isIfTop() && !previousDot.getMove().equals("b")) {
-            System.out.println("hi");
-            x = thisDot.getXCoordinate();
-            y = thisDot.getYCoordinate() - 1;
-            thisDot.setMove("t");
-        }
-        if (thisDot.isIfBottom() && !previousDot.getMove().equals("t")) {
-            System.out.println("hit");
-            x = thisDot.getXCoordinate();
-            y = thisDot.getYCoordinate() + 1;
-            thisDot.setMove("b");
-        }
-        if (thisDot.isIfLeft() && !previousDot.getMove().equals("r")) {
-            x = thisDot.getXCoordinate() - 1;
-            y = thisDot.getYCoordinate();
-            thisDot.setMove("l");
-        }
-        if (thisDot.isIfRight() && !previousDot.getMove().equals("l")) {
-            x = thisDot.getXCoordinate() + 1;
-            y = thisDot.getYCoordinate();
-            thisDot.setMove("r");
-        }
-        return new int[] {x, y};
+    private Dot evaluatePoint(Dot previousDot) {
+        ArrayList<Dot> possiblePoints = findAllPossibleOutcome(previousDot);
+        Dot solution = findSolution(possiblePoints);
+        return solution;
     }
 
     public String toString() {
         String answer = "";
         int index = 0;
         for (Dot dot : dotArray) {
-            answer += "(" + dot.getXCoordinate() + ", " + dot.getYCoordinate() + ") ";
+            answer += "(" + dot.getYCoordinate() + ", " + dot.getXCoordinate() + ") ";
             if (index != dotArray.size() - 1) {
                 answer += "---> ";
             }
+            index ++;
         }
         return answer;
     }
