@@ -54,13 +54,15 @@ public class Route {
         return possiblePoints;
     }
 
-    private Dot findSolution(ArrayList<Dot> allPossibleSolutions) {
+    //gets rid of the dots we've been to
+    private ArrayList<Dot> findValidSolution(ArrayList<Dot> allPossibleSolutions) {
+        ArrayList<Dot> solutions = new ArrayList<Dot>();
         for (Dot dot : allPossibleSolutions) {
             if (!isFound(dot)) {
-                return dot;
+                solutions.add(dot);
             }
         }
-        return null;
+        return solutions;
     }
 
     private Dot moveTop(Dot previous) {
@@ -92,9 +94,19 @@ public class Route {
         return false;
     }
 
+    //impement this, if solution.size == 1 then just get that dot, then we are running into a fork.
+    //treat each for as a route, just like we did in part one
+    //but have a while loop to make it stop when run into a dead end
     private Dot evaluatePoint(Dot previousDot) {
         ArrayList<Dot> possiblePoints = findAllPossibleOutcome(previousDot);
-        Dot solution = findSolution(possiblePoints);
+        ArrayList <Dot> possibleRoutes = new ArrayList<Dot>();
+        possibleRoutes = findValidSolution(possiblePoints);
+        if (possibleRoutes.size() == 1) {
+            return possibleRoutes.get(0);
+        }
+        else {
+
+        }
         return solution;
     }
 
