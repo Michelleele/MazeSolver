@@ -89,4 +89,8 @@ public class Dot {
     public void setIfLeft(boolean ifLeft) {
         this.ifLeft = ifLeft;
     }
+
+    public String toString() {
+        return "Dot: " + yCoordinate + ", " + xCoordinate;
+    }
 }
