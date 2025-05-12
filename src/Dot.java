@@ -6,6 +6,8 @@ public class Dot {
     private boolean ifBottom;
     private int xCoordinate;
     private int yCoordinate;
+    private boolean isDeadEnd;
+    private boolean isEnd;
 
     public Dot(String[][] array, int x , int y) {
         ifLeft = false;
@@ -14,11 +16,17 @@ public class Dot {
         ifBottom = false;
         xCoordinate = x;
         yCoordinate = y;
+        isDeadEnd = false;
+        isEnd = false;
+        int count = 0;
 
         //checks left
         if (x - 1 >= 0) {
             if (array[y][x - 1].equals(".")) {
                 ifLeft = true;
+            }
+            else {
+                count ++;
             }
         }
         //checks right
@@ -26,17 +34,36 @@ public class Dot {
             if (array[y][x + 1].equals(".")) {
                 ifRight = true;
             }
+            else {
+                count ++;
+            }
         }
+
         //checks top
         if (y - 1 >= 0) {
             if (array[y - 1][x].equals(".")) {
                 ifTop = true;
+            }
+            else {
+                count ++;
             }
         }
         //checks bottom
         if (y + 1 < array.length) {
             if (array[y + 1][x].equals(".")) {
                 ifBottom = true;
+            }
+            else {
+                count ++;
+            }
+        }
+
+        if (count == 1) {
+            if (x == array[0].length && y == array.length) {
+                isEnd = true;
+            }
+            else {
+                isDeadEnd = true;
             }
         }
 
@@ -88,9 +115,5 @@ public class Dot {
 
     public void setIfLeft(boolean ifLeft) {
         this.ifLeft = ifLeft;
-    }
-
-    public String toString() {
-        return "Dot: " + yCoordinate + ", " + xCoordinate;
     }
 }

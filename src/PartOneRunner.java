@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 public class PartOneRunner {
 
     public static String[][] getMaze(String fileName) {
